@@ -69,15 +69,6 @@ export function selectInstruments(
     (s) => s.baseAsset === baseAsset && s.tradable,
   );
 
-  console.log("Total symbols:", symbols.length);
-  console.log("Filtered symbols:", filtered.length);
-  console.log(
-    "Sample symbols:",
-    symbols
-      .slice(0, 3)
-      .map((s) => ({ baseAsset: s.baseAsset, tradable: s.tradable })),
-  );
-
   if (filtered.length === 0) {
     return {
       expiryDate: 0,
