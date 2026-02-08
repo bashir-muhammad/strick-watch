@@ -1,27 +1,80 @@
 "use client";
-import { useEffect } from "react";
-import { fetchExchangeInfo, fetchIndexPrice } from "../lib/binance";
+import { useEffect, useState } from "react";
+import {
+  fetchExchangeInfo,
+  fetchIndexPrice,
+  selectInstruments,
+  type SelectedExpiry,
+} from "../lib/binance";
+
+function formatUSD(n: number): string {
+  return n.toLocaleString("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+}
+
+function formatStrike(s: string): string {
+  return parseFloat(s).toLocaleString("en-US");
+}
 
 export default function Overview() {
+  const [exchangeInfo, setExchangeInfo] = useState<SelectedExpiry | null>(null);
+  const [indexPrice, setIndexPrice] = useState<number | null>(null);
+
   useEffect(() => {
-    const fetchData = async () => {
+    const loadData = async () => {
       try {
-        const exchangeInfo = await fetchExchangeInfo();
-        const indexPrice = await fetchIndexPrice("BTCUSDT");
-        console.log("Exchange Info:", exchangeInfo);
-        console.log("Index Price:", indexPrice);
+        const [exchangeInfo, indexPrice] = await Promise.all([
+          fetchExchangeInfo(),
+          fetchIndexPrice("BTCUSDT"),
+        ]);
+
+        setIndexPrice(indexPrice);
+
+        const result = selectInstruments(
+          exchangeInfo.optionSymbols,
+          "BTC",
+          indexPrice,
+          exchangeInfo.serverTime,
+        );
+
+        setExchangeInfo(result);
+        console.log("Selected Instruments:", result);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
-
-    fetchData();
+    loadData();
+    const interval = setInterval(loadData, 10000);
+    return () => clearInterval(interval);
   }, []);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <h2>Overview</h2>
-      </main>
+    <div className="">
+      <h2>Overview</h2>
+      <div>
+        <p>Exchange instruments: {JSON.stringify(exchangeInfo?.instruments)}</p>
+        <div>
+          <p>expiryDate: {exchangeInfo?.expiryDate ?? "N/A"}</p>
+          <p>indexPrice: ${formatUSD(exchangeInfo?.indexPrice ?? 0)}</p>
+          <p>instruments: {JSON.stringify(exchangeInfo?.instruments)}</p>
+          <p>Target Strike: {formatUSD(exchangeInfo?.targetStrike ?? 0)}</p>
+          <p>
+            Highlighted Call:{" "}
+            {exchangeInfo?.highlightedCall
+              ? formatStrike(exchangeInfo.highlightedCall)
+              : "N/A"}
+          </p>
+          <p>
+            Highlighted Put:{" "}
+            {exchangeInfo?.highlightedPut
+              ? formatStrike(exchangeInfo.highlightedPut)
+              : "N/A"}
+          </p>
+        </div>
+        <p>Index Price: {indexPrice}</p>
+      </div>
     </div>
   );
 }
