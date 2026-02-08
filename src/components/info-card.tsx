@@ -14,7 +14,7 @@ function InfoCard({
 }) {
   return (
     <Card>
-      <CardHeader className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
+      <CardHeader className="text-xs text-muted-foreground uppercase tracking-wider">
         {label}
       </CardHeader>
       <CardContent
@@ -23,9 +23,7 @@ function InfoCard({
         {value}
       </CardContent>
       {sub && (
-        <CardFooter className="text-xs text-muted-foreground mt-0.5">
-          {sub}
-        </CardFooter>
+        <CardFooter className="text-xs text-muted-foreground">{sub}</CardFooter>
       )}
     </Card>
   );
