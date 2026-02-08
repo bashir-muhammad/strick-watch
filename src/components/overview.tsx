@@ -55,9 +55,6 @@ export default function Overview() {
     <div className="bg-background">
       <header className="mb-6 w-full flex items-center justify-between flex-wrap gap-4 ">
         <div>
-          <h1 className="text-2xl font-sans font-semibold text-foreground tracking-tight">
-            Options Overview
-          </h1>
           <p className="text-sm text-muted-foreground mt-1">
             Live instruments · Binance European Options
           </p>
