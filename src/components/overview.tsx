@@ -1,6 +1,7 @@
 "use client";
 import { formatStrike, formatDate, formatUSD } from "@/lib/utils";
 import { useEffect, useState, useCallback } from "react";
+import { RefreshCw } from "lucide-react";
 import {
   fetchExchangeInfo,
   fetchIndexPrice,
@@ -21,7 +22,7 @@ export default function Overview() {
   const [error, setError] = useState<string | null>(null);
   const [lastUpdate, setLastUpdate] = useState<number>(0);
 
-  const load = useCallback(async () => {
+  const loadData = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -45,47 +46,45 @@ export default function Overview() {
   }, [base]);
 
   useEffect(() => {
-    load();
-    const interval = setInterval(load, 30_000);
+    loadData();
+    const interval = setInterval(loadData, 30_000);
     return () => clearInterval(interval);
-  }, [load]);
+  }, [loadData]);
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-8">
-      <header className="mb-6">
-        <div className="flex items-center justify-between flex-wrap gap-4">
-          <div>
-            <h1 className="text-2xl font-sans font-semibold text-foreground tracking-tight">
-              Options Overview
-            </h1>
-            <p className="text-sm text-muted-foreground mt-1">
-              Live instruments · Binance European Options
-            </p>
+    <div className="bg-background">
+      <header className="mb-6 w-full flex items-center justify-between flex-wrap gap-4 ">
+        <div>
+          <h1 className="text-2xl font-sans font-semibold text-foreground tracking-tight">
+            Options Overview
+          </h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            Live instruments · Binance European Options
+          </p>
+        </div>
+        <div className="flex items-center gap-3 ml-auto">
+          <div className="flex ring-foreground/50 ring-1 rounded-md overflow-hidden">
+            {BASES.map((b) => (
+              <button
+                key={b}
+                onClick={() => setBase(b)}
+                className={`px-4 py-1.5 text-sm transition-colors hover:cursor-pointer ${
+                  base === b
+                    ? "bg-gray-200 text-foreground"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {b}
+              </button>
+            ))}
           </div>
-          <div className="flex items-center gap-3">
-            <div className="flex border border-border rounded-md overflow-hidden">
-              {BASES.map((b) => (
-                <button
-                  key={b}
-                  onClick={() => setBase(b)}
-                  className={`px-4 py-1.5 text-sm font-mono transition-colors ${
-                    base === b
-                      ? "bg-secondary text-foreground"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {b}
-                </button>
-              ))}
-            </div>
-            <button
-              onClick={load}
-              disabled={loading}
-              className="px-3 py-1.5 text-sm border border-border rounded-md text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
-            >
-              ↻
-            </button>
-          </div>
+          <button
+            onClick={loadData}
+            disabled={loading}
+            className="px-3 py-2.5 text-sm ring-foreground/50 ring-1 rounded-md text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
+          >
+            <RefreshCw size={14} />
+          </button>
         </div>
       </header>
 
@@ -105,7 +104,6 @@ export default function Overview() {
 
       {data && (
         <>
-          {/* Summary Cards */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
             <InfoCard
               label="Index Price"
@@ -135,8 +133,7 @@ export default function Overview() {
             </div>
           )}
 
-          {/* Options Table */}
-          <div className="border border-border rounded-md overflow-hidden">
+          <div className="ring-foreground/10 ring-1 rounded-md overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
@@ -204,7 +201,6 @@ export default function Overview() {
             </div>
           </div>
 
-          {/* Footer */}
           <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground">
             <span>
               Updated{" "}
