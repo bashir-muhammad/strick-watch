@@ -1,7 +1,6 @@
 "use client";
 import { formatStrike, formatDate, formatUSD } from "@/lib/utils";
 import { useEffect, useState, useCallback } from "react";
-import { RefreshCw } from "lucide-react";
 import {
   fetchExchangeInfo,
   fetchIndexPrice,
@@ -11,9 +10,9 @@ import {
 import { getStrikeRows } from "@/lib/utils";
 import HighlightCard from "./highlight-card";
 import InfoCard from "./info-card";
-
-const BASES = ["BTC", "ETH"] as const;
-type Base = (typeof BASES)[number];
+import StrikeRow from "./strike-row";
+import { HeaderControls, type Base } from "./header-control";
+import { Card, CardHeader, CardContent, CardFooter } from "./ui/card";
 
 export default function Overview() {
   const [base, setBase] = useState<Base>("BTC");
@@ -53,37 +52,12 @@ export default function Overview() {
 
   return (
     <div className="bg-background mx-auto w-full">
-      <header className="mb-6 w-full flex items-center justify-between flex-wrap gap-4 ">
-        <div>
-          <p className="text-sm text-muted-foreground mt-1">
-            Live instruments · Binance European Options
-          </p>
-        </div>
-        <div className="flex items-center gap-3 ml-auto">
-          <div className="flex ring-foreground/50 ring-1 rounded-md overflow-hidden">
-            {BASES.map((b) => (
-              <button
-                key={b}
-                onClick={() => setBase(b)}
-                className={`px-4 py-1.5 text-sm transition-colors hover:cursor-pointer ${
-                  base === b
-                    ? "bg-gray-200 text-foreground"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {b}
-              </button>
-            ))}
-          </div>
-          <button
-            onClick={loadData}
-            disabled={loading}
-            className="px-3 py-2.5 text-sm ring-foreground/50 ring-1 rounded-md text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
-          >
-            <RefreshCw size={14} />
-          </button>
-        </div>
-      </header>
+      <HeaderControls
+        base={base}
+        loading={loading}
+        onBaseChange={setBase}
+        onRefresh={loadData}
+      />
 
       {error && (
         <div className="p-4 rounded-md bg-accent/10 border border-accent text-accent mb-6 text-sm">
@@ -130,7 +104,7 @@ export default function Overview() {
             </div>
           )}
 
-          <div className="ring-foreground/10 ring-1 rounded-md overflow-hidden">
+          <Card className="overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
@@ -148,55 +122,12 @@ export default function Overview() {
                 </thead>
                 <tbody>
                   {getStrikeRows(data).map((row) => (
-                    <tr
-                      key={row.strike}
-                      className={`border-t border-gray-200 transition-colors ${
-                        row.isHighlighted
-                          ? "bg-highlight/10 border-gray-300"
-                          : "hover:bg-secondary/30 "
-                      }`}
-                    >
-                      <td
-                        className={`px-4 py-2 ${row.isHighlighted ? "text-highlight font-semibold" : "text-foreground"}`}
-                      >
-                        {formatStrike(row.strike)}
-                        {row.isHighlighted && (
-                          <span className="ml-2 text-xs text-highlight opacity-70">
-                            ★
-                          </span>
-                        )}
-                      </td>
-                      <td className="px-4 py-2 text-center">
-                        {row.call ? (
-                          <span
-                            className={`${row.callHighlighted ? "text-highlight font-bold" : "text-call"}`}
-                          >
-                            {row.call.symbol.split("-").slice(-1)[0] === "C"
-                              ? "●"
-                              : ""}
-                            {" " + row.call.symbol}
-                          </span>
-                        ) : (
-                          <span className="text-muted-foreground">—</span>
-                        )}
-                      </td>
-                      <td className="px-4 py-2 text-center">
-                        {row.put ? (
-                          <span
-                            className={`${row.putHighlighted ? "text-highlight font-bold" : "text-put"}`}
-                          >
-                            {row.put.symbol}
-                          </span>
-                        ) : (
-                          <span className="text-muted-foreground">—</span>
-                        )}
-                      </td>
-                    </tr>
+                    <StrikeRow key={row.strike} {...row} />
                   ))}
                 </tbody>
               </table>
             </div>
-          </div>
+          </Card>
 
           <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground">
             <span>
@@ -213,4 +144,3 @@ export default function Overview() {
     </div>
   );
 }
-
