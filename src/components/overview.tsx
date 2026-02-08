@@ -52,7 +52,7 @@ export default function Overview() {
   }, [loadData]);
 
   return (
-    <div className="bg-background">
+    <div className="bg-background mx-auto w-full">
       <header className="mb-6 w-full flex items-center justify-between flex-wrap gap-4 ">
         <div>
           <p className="text-sm text-muted-foreground mt-1">
@@ -150,14 +150,14 @@ export default function Overview() {
                   {getStrikeRows(data).map((row) => (
                     <tr
                       key={row.strike}
-                      className={`border-t border-border transition-colors ${
+                      className={`border-t border-gray-200 transition-colors ${
                         row.isHighlighted
-                          ? "bg-highlight border-highlight"
-                          : "hover:bg-secondary/30"
+                          ? "bg-highlight/10 border-gray-300"
+                          : "hover:bg-secondary/30 "
                       }`}
                     >
                       <td
-                        className={`px-4 py-2 font-mono ${row.isHighlighted ? "text-highlight font-semibold" : "text-foreground"}`}
+                        className={`px-4 py-2 ${row.isHighlighted ? "text-highlight font-semibold" : "text-foreground"}`}
                       >
                         {formatStrike(row.strike)}
                         {row.isHighlighted && (
@@ -169,7 +169,7 @@ export default function Overview() {
                       <td className="px-4 py-2 text-center">
                         {row.call ? (
                           <span
-                            className={`font-mono ${row.callHighlighted ? "text-highlight font-bold" : "text-call"}`}
+                            className={`${row.callHighlighted ? "text-highlight font-bold" : "text-call"}`}
                           >
                             {row.call.symbol.split("-").slice(-1)[0] === "C"
                               ? "●"
@@ -183,7 +183,7 @@ export default function Overview() {
                       <td className="px-4 py-2 text-center">
                         {row.put ? (
                           <span
-                            className={`font-mono ${row.putHighlighted ? "text-highlight font-bold" : "text-put"}`}
+                            className={`${row.putHighlighted ? "text-highlight font-bold" : "text-put"}`}
                           >
                             {row.put.symbol}
                           </span>

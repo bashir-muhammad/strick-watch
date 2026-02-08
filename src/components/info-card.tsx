@@ -18,7 +18,7 @@ function InfoCard({
         {label}
       </CardHeader>
       <CardContent
-        className={`text-sm font-semibold truncate ${mono ? "font-mono text-xs" : ""} ${accent ? "text-highlight" : "text-foreground"}`}
+        className={`text-sm font-semibold truncate ${mono ? "text-xs" : ""} ${accent ? "text-highlight" : "text-foreground"}`}
       >
         {value}
       </CardContent>

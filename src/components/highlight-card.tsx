@@ -1,5 +1,6 @@
 import { formatStrike } from "@/lib/utils";
-import { Card } from "./ui/card";
+import { MoveUp, MoveDown } from "lucide-react";
+import { Card, CardHeader, CardContent, CardFooter } from "./ui/card";
 
 const HighlightCard = ({
   instrument,
@@ -13,22 +14,31 @@ const HighlightCard = ({
     <Card
       className={`${isCall ? "border-call/30 bg-call-muted" : "border-put/30 bg-put-muted"}`}
     >
-      <div className="flex items-center gap-2 mb-2">
+      <CardHeader className="flex items-center gap-2">
         <span
-          className={`text-xs font-semibold px-2 py-0.5 rounded ${
+          className={`text-xs font-semibold py-0.5 rounded ${
             isCall ? "bg-call/20 text-call" : "bg-put/20 text-put"
           }`}
         >
-          {isCall ? "↑ CALL" : "↓ PUT"}
+          {isCall ? (
+            <>
+              <MoveUp className="w-3 h-3 inline-block mr-1" />
+              Call
+            </>
+          ) : (
+            <>
+              <MoveDown className="w-3 h-3 inline-block mr-1" /> Put
+            </>
+          )}
         </span>
         <span className="text-xs text-muted-foreground">Highlighted</span>
-      </div>
-      <div className="font-mono text-sm text-foreground truncate">
+      </CardHeader>
+      <CardContent className="font-mono text-sm text-foreground truncate">
         {instrument.symbol}
-      </div>
-      <div className="text-xs text-muted-foreground mt-1">
+      </CardContent>
+      <CardFooter className="text-xs text-muted-foreground mt-1">
         Strike: ${formatStrike(instrument.strikePrice)}
-      </div>
+      </CardFooter>
     </Card>
   );
 };
