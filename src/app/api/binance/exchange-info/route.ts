@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-const BASE = "https://eapi.binance.com";
+const BASE = process.env.BINANCE_API_URL || "https://eapi.binance.com";
 
 export async function GET() {
   const response = await fetch(`${BASE}/eapi/v1/exchangeInfo`, {

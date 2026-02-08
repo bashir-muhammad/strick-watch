@@ -7,6 +7,9 @@ export interface ExchangeInfoResponse {
 
 export async function fetchExchangeInfo(): Promise<ExchangeInfoResponse> {
   const response = await fetch(`${BASE}/exchange-info`);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch exchange info: ${response.status}`);
+  }
   const data = await response.json();
 
   return data as ExchangeInfoResponse;
@@ -16,6 +19,11 @@ export async function fetchIndexPrice(underlying: string): Promise<number> {
   const response = await fetch(
     `${BASE}/index?underlying=${encodeURIComponent(underlying)}`,
   );
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch index price: ${response.status}`);
+  }
+  
   const data = await response.json();
 
   return parseFloat(data.indexPrice);
@@ -64,12 +72,11 @@ export function selectInstruments(
   indexPrice: number,
   serverTime: number,
 ): SelectedExpiry {
-
   const filtered = symbols.filter((s) => {
     const symbolBase = s.symbol.split("-")[0];
     return symbolBase === baseAsset;
   });
-  
+
   if (filtered.length === 0) {
     const nextFri = getNextFridayUTC(serverTime).getTime();
     return {

@@ -1,5 +1,5 @@
 "use client";
-import { formatStrike, formatDate, formatUSD } from "@/lib/utils";
+import { formatDate, formatUSD } from "@/lib/utils";
 import { useEffect, useState, useCallback } from "react";
 import {
   fetchExchangeInfo,
@@ -12,7 +12,7 @@ import HighlightCard from "./highlight-card";
 import InfoCard from "./info-card";
 import StrikeRow from "./strike-row";
 import { HeaderControls, type Base } from "./header-control";
-import { Card, CardHeader, CardContent, CardFooter } from "./ui/card";
+import { Card } from "./ui/card";
 
 export default function Overview() {
   const [base, setBase] = useState<Base>("BTC");
