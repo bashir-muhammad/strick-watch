@@ -1,0 +1,34 @@
+import { Card, CardHeader, CardContent, CardFooter } from "./ui/card";
+function InfoCard({
+  label,
+  value,
+  sub,
+  mono,
+  accent,
+}: {
+  label: string;
+  value: string;
+  sub?: string;
+  mono?: boolean;
+  accent?: boolean;
+}) {
+  return (
+    <Card>
+      <CardHeader className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
+        {label}
+      </CardHeader>
+      <CardContent
+        className={`text-sm font-semibold truncate ${mono ? "font-mono text-xs" : ""} ${accent ? "text-highlight" : "text-foreground"}`}
+      >
+        {value}
+      </CardContent>
+      {sub && (
+        <CardFooter className="text-xs text-muted-foreground mt-0.5">
+          {sub}
+        </CardFooter>
+      )}
+    </Card>
+  );
+}
+
+export default InfoCard;
