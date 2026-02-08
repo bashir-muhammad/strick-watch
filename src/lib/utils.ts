@@ -29,13 +29,17 @@ const formatUSD = (n: number): string => {
 const getStrikeRows = (data: SelectedExpiry): StrikeRow[] => {
   const strikeMap = new Map<
     string,
-    { call: { symbol: string } | null; put: { symbol: string } | null }
+    {
+      numeric: number;
+      call: { symbol: string } | null;
+      put: { symbol: string } | null;
+    }
   >();
 
   for (const inst of data.instruments) {
     const key = inst.strikePrice;
     if (!strikeMap.has(key)) {
-      strikeMap.set(key, { call: null, put: null });
+      strikeMap.set(key, { numeric: parseFloat(key), call: null, put: null });
     }
     const entry = strikeMap.get(key)!;
     if (inst.side === "CALL") entry.call = inst;
@@ -46,7 +50,7 @@ const getStrikeRows = (data: SelectedExpiry): StrikeRow[] => {
   const highlightedPutStrike = data.highlightedPut?.strikePrice;
 
   return Array.from(strikeMap.entries())
-    .sort(([a], [b]) => parseFloat(a) - parseFloat(b))
+    .sort(([, a], [, b]) => a.numeric - b.numeric)
     .map(([strike, { call, put }]) => ({
       strike,
       call,
